@@ -1,0 +1,64 @@
+
+Total unique classes: 60
+
+Unique classes:
+- Industrial fan normal
+- Industrial fan abnormal
+- Industrial pump normal
+- Industrial pump abnormal
+- Industrial slider normal
+- Industrial slider abnormal
+- Industrial valve normal
+- Industrial valve abnormal
+- Industrial ToyCar normal
+- Industrial ToyCar abnormal
+- airplane
+- breathing
+- brushing teeth
+- can opening
+- car horn
+- cat
+- chainsaw
+- chirping birds
+- church bells
+- clapping
+- clock alarm
+- clock tick
+- coughing
+- cow
+- crackling fire
+- crickets
+- crow
+- crying baby
+- dog
+- door wood creaks
+- door wood knock
+- drinking sipping
+- engine
+- fireworks
+- footsteps
+- frog
+- glass breaking
+- hand saw
+- helicopter
+- hen
+- insects
+- keyboard typing
+- laughing
+- mouse click
+- pig
+- pouring water
+- rain
+- rooster
+- sea waves
+- sheep
+- siren
+- sneezing
+- snoring
+- thunderstorm
+- toilet flush
+- train
+- vacuum cleaner
+- washing machine
+- water drops
+- wind

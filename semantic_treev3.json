@@ -1,0 +1,829 @@
+{
+  "label": "Manufacturing Process Variables",
+  "phrases": [
+    " church bells",
+    " clock alarm",
+    " clock tick",
+    " car horn",
+    " laughing",
+    " clapping",
+    " door wood creaks",
+    " door wood knock",
+    " footsteps",
+    " train",
+    " airplane",
+    " siren",
+    " helicopter",
+    " insects",
+    " chirping birds",
+    " crickets",
+    " fireworks",
+    " pouring water",
+    " rain",
+    " thunderstorm",
+    " crackling fire",
+    " water drops",
+    " crow",
+    " rooster",
+    " hen",
+    " sea waves",
+    " wind",
+    " sneezing",
+    " breathing",
+    " snoring",
+    " coughing",
+    " crying baby",
+    " drinking sipping",
+    " glass breaking",
+    " brushing teeth",
+    " frog",
+    " pig",
+    " cat",
+    " sheep",
+    " cow",
+    " dog",
+    " keyboard typing",
+    " mouse click",
+    " fan normal",
+    " fan abnormal",
+    " pump normal",
+    " pump abnormal",
+    " valve normal",
+    " valve abnormal",
+    " ToyCar normal",
+    " ToyCar abnormal",
+    " slider normal",
+    " slider abnormal",
+    " engine",
+    " hand saw",
+    " chainsaw",
+    " toilet flush",
+    " vacuum cleaner",
+    " washing machine",
+    " can opening"
+  ],
+  "children": [
+    {
+      "label": "Animal Sounds and Calls",
+      "phrases": [
+        " church bells",
+        " clock alarm",
+        " clock tick",
+        " car horn",
+        " laughing",
+        " clapping",
+        " door wood creaks",
+        " door wood knock",
+        " footsteps",
+        " train",
+        " airplane",
+        " siren",
+        " helicopter",
+        " insects",
+        " chirping birds",
+        " crickets",
+        " fireworks",
+        " pouring water",
+        " rain",
+        " thunderstorm",
+        " crackling fire",
+        " water drops",
+        " crow",
+        " rooster",
+        " hen",
+        " sea waves",
+        " wind",
+        " sneezing",
+        " breathing",
+        " snoring",
+        " coughing",
+        " crying baby",
+        " drinking sipping",
+        " glass breaking",
+        " brushing teeth",
+        " frog",
+        " pig",
+        " cat",
+        " sheep",
+        " cow",
+        " dog",
+        " keyboard typing",
+        " mouse click"
+      ],
+      "children": [
+        {
+          "label": "Vocalizations",
+          "phrases": [
+            " church bells",
+            " clock alarm",
+            " clock tick",
+            " car horn",
+            " laughing",
+            " clapping",
+            " door wood creaks",
+            " door wood knock",
+            " footsteps",
+            " train",
+            " airplane",
+            " siren",
+            " helicopter",
+            " insects",
+            " chirping birds",
+            " crickets",
+            " fireworks",
+            " pouring water",
+            " rain",
+            " thunderstorm",
+            " crackling fire",
+            " water drops",
+            " crow",
+            " rooster",
+            " hen",
+            " sea waves",
+            " wind",
+            " sneezing",
+            " breathing",
+            " snoring",
+            " coughing",
+            " crying baby"
+          ],
+          "children": [
+            {
+              "label": "Bell Sounds",
+              "phrases": [
+                " church bells",
+                " clock alarm",
+                " clock tick",
+                " car horn",
+                " laughing",
+                " clapping",
+                " door wood creaks",
+                " door wood knock",
+                " footsteps",
+                " train"
+              ],
+              "children": [
+                {
+                  "label": "Religious Bells",
+                  "phrases": [
+                    " church bells",
+                    " clock alarm",
+                    " clock tick",
+                    " car horn"
+                  ],
+                  "children": [
+                    {
+                      "label": " church bells",
+                      "phrases": [
+                        " church bells"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " clock alarm",
+                      "phrases": [
+                        " clock alarm"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " clock tick",
+                      "phrases": [
+                        " clock tick"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " car horn",
+                      "phrases": [
+                        " car horn"
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "label": "4. Joyful Crowd Participation",
+                  "phrases": [
+                    " laughing",
+                    " clapping"
+                  ],
+                  "children": [
+                    {
+                      "label": " laughing",
+                      "phrases": [
+                        " laughing"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " clapping",
+                      "phrases": [
+                        " clapping"
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "label": "Wooden Door Noises",
+                  "phrases": [
+                    " door wood creaks",
+                    " door wood knock"
+                  ],
+                  "children": [
+                    {
+                      "label": " door wood creaks",
+                      "phrases": [
+                        " door wood creaks"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " door wood knock",
+                      "phrases": [
+                        " door wood knock"
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "label": " footsteps",
+                  "phrases": [
+                    " footsteps"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " train",
+                  "phrases": [
+                    " train"
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "label": "Nature's Sonic Displays",
+              "phrases": [
+                " airplane",
+                " siren",
+                " helicopter",
+                " insects",
+                " chirping birds",
+                " crickets",
+                " fireworks",
+                " pouring water",
+                " rain",
+                " thunderstorm",
+                " crackling fire",
+                " water drops",
+                " crow",
+                " rooster",
+                " hen",
+                " sea waves",
+                " wind"
+              ],
+              "children": [
+                {
+                  "label": "Aerodynamic Sounds",
+                  "phrases": [
+                    " airplane",
+                    " siren",
+                    " helicopter"
+                  ],
+                  "children": [
+                    {
+                      "label": " airplane",
+                      "phrases": [
+                        " airplane"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " siren",
+                      "phrases": [
+                        " siren"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " helicopter",
+                      "phrases": [
+                        " helicopter"
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "label": "Wildlife Vocalizations and Chirps",
+                  "phrases": [
+                    " insects",
+                    " chirping birds",
+                    " crickets"
+                  ],
+                  "children": [
+                    {
+                      "label": " insects",
+                      "phrases": [
+                        " insects"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " chirping birds",
+                      "phrases": [
+                        " chirping birds"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " crickets",
+                      "phrases": [
+                        " crickets"
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "label": "Inclement Weather Sounds",
+                  "phrases": [
+                    " fireworks",
+                    " pouring water",
+                    " rain",
+                    " thunderstorm",
+                    " crackling fire",
+                    " water drops"
+                  ],
+                  "children": [
+                    {
+                      "label": " fireworks",
+                      "phrases": [
+                        " fireworks"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " pouring water",
+                      "phrases": [
+                        " pouring water"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " rain",
+                      "phrases": [
+                        " rain"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " thunderstorm",
+                      "phrases": [
+                        " thunderstorm"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " crackling fire",
+                      "phrases": [
+                        " crackling fire"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " water drops",
+                      "phrases": [
+                        " water drops"
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "label": "Fowl Sounds and Calls",
+                  "phrases": [
+                    " crow",
+                    " rooster",
+                    " hen"
+                  ],
+                  "children": [
+                    {
+                      "label": " crow",
+                      "phrases": [
+                        " crow"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " rooster",
+                      "phrases": [
+                        " rooster"
+                      ],
+                      "children": []
+                    },
+                    {
+                      "label": " hen",
+                      "phrases": [
+                        " hen"
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "label": " sea waves",
+                  "phrases": [
+                    " sea waves"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " wind",
+                  "phrases": [
+                    " wind"
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "label": "Airway Motions with a Positive Connotation",
+              "phrases": [
+                " sneezing",
+                " breathing",
+                " snoring",
+                " coughing"
+              ],
+              "children": [
+                {
+                  "label": " sneezing",
+                  "phrases": [
+                    " sneezing"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " breathing",
+                  "phrases": [
+                    " breathing"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " snoring",
+                  "phrases": [
+                    " snoring"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " coughing",
+                  "phrases": [
+                    " coughing"
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "label": " crying baby",
+              "phrases": [
+                " crying baby"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "label": "Oral Care Habits",
+          "phrases": [
+            " drinking sipping",
+            " glass breaking",
+            " brushing teeth"
+          ],
+          "children": [
+            {
+              "label": " drinking sipping",
+              "phrases": [
+                " drinking sipping"
+              ],
+              "children": []
+            },
+            {
+              "label": " glass breaking",
+              "phrases": [
+                " glass breaking"
+              ],
+              "children": []
+            },
+            {
+              "label": " brushing teeth",
+              "phrases": [
+                " brushing teeth"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "label": "Mammalian Pets",
+          "phrases": [
+            " frog",
+            " pig",
+            " cat",
+            " sheep",
+            " cow",
+            " dog"
+          ],
+          "children": [
+            {
+              "label": " frog",
+              "phrases": [
+                " frog"
+              ],
+              "children": []
+            },
+            {
+              "label": " pig",
+              "phrases": [
+                " pig"
+              ],
+              "children": []
+            },
+            {
+              "label": " cat",
+              "phrases": [
+                " cat"
+              ],
+              "children": []
+            },
+            {
+              "label": " sheep",
+              "phrases": [
+                " sheep"
+              ],
+              "children": []
+            },
+            {
+              "label": " cow",
+              "phrases": [
+                " cow"
+              ],
+              "children": []
+            },
+            {
+              "label": " dog",
+              "phrases": [
+                " dog"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "label": "Typing and Pointing Gestures",
+          "phrases": [
+            " keyboard typing",
+            " mouse click"
+          ],
+          "children": [
+            {
+              "label": " keyboard typing",
+              "phrases": [
+                " keyboard typing"
+              ],
+              "children": []
+            },
+            {
+              "label": " mouse click",
+              "phrases": [
+                " mouse click"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Can Manufacturing Parameters",
+      "phrases": [
+        " fan normal",
+        " fan abnormal",
+        " pump normal",
+        " pump abnormal",
+        " valve normal",
+        " valve abnormal",
+        " ToyCar normal",
+        " ToyCar abnormal",
+        " slider normal",
+        " slider abnormal",
+        " engine",
+        " hand saw",
+        " chainsaw",
+        " toilet flush",
+        " vacuum cleaner",
+        " washing machine",
+        " can opening"
+      ],
+      "children": [
+        {
+          "label": "Fan Motor Operational Norms",
+          "phrases": [
+            " fan normal",
+            " fan abnormal",
+            " pump normal",
+            " pump abnormal",
+            " valve normal",
+            " valve abnormal"
+          ],
+          "children": [
+            {
+              "label": "Industrial Fan Anomalies",
+              "phrases": [
+                " Industrial fan normal",
+                " Industrial fan abnormal"
+              ],
+              "children": [
+                {
+                  "label": " fan normal",
+                  "phrases": [
+                    " fan normal"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " fan abnormal",
+                  "phrases": [
+                    " fan abnormal"
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "label": "Valve System Normalcy",
+              "phrases": [
+                " pump normal",
+                " pump abnormal",
+                " valve normal",
+                " valve abnormal"
+              ],
+              "children": [
+                {
+                  "label": " pump normal",
+                  "phrases": [
+                    " pump normal"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " pump abnormal",
+                  "phrases": [
+                    " pump abnormal"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " valve normal",
+                  "phrases": [
+                    " valve normal"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " valve abnormal",
+                  "phrases": [
+                    " valve abnormal"
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Industrial Machinery Characteristics",
+          "phrases": [
+            " ToyCar normal",
+            " ToyCar abnormal",
+            " slider normal",
+            " slider abnormal",
+            " engine",
+            " hand saw",
+            " chainsaw",
+            " toilet flush",
+            " vacuum cleaner",
+            " washing machine"
+          ],
+          "children": [
+            {
+              "label": "Toy Car Operational Patterns",
+              "phrases": [
+                " ToyCar normal",
+                " ToyCar abnormal",
+                " slider normal",
+                " slider abnormal"
+              ],
+              "children": [
+                {
+                  "label": " ToyCar normal",
+                  "phrases": [
+                    " ToyCar normal"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " ToyCar abnormal",
+                  "phrases": [
+                    " ToyCar abnormal"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " slider normal",
+                  "phrases": [
+                    " slider normal"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " slider abnormal",
+                  "phrases": [
+                    " slider abnormal"
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "label": " engine",
+              "phrases": [
+                " engine"
+              ],
+              "children": []
+            },
+            {
+              "label": "Power Tools",
+              "phrases": [
+                " hand saw",
+                " chainsaw",
+                " toilet flush",
+                " vacuum cleaner",
+                " washing machine"
+              ],
+              "children": [
+                {
+                  "label": " hand saw",
+                  "phrases": [
+                    " hand saw"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " chainsaw",
+                  "phrases": [
+                    " chainsaw"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " toilet flush",
+                  "phrases": [
+                    " toilet flush"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " vacuum cleaner",
+                  "phrases": [
+                    " vacuum cleaner"
+                  ],
+                  "children": []
+                },
+                {
+                  "label": " washing machine",
+                  "phrases": [
+                    " washing machine"
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": " can opening",
+          "phrases": [
+            " can opening"
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}
