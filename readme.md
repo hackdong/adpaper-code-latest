@@ -15,7 +15,7 @@ This project implements a deep learning system for detecting sound events and an
 
 1. Clone the repository:
    ```
-   git clone https://github.com/hackdong/adpaper-code.git
+   git clone https://github.com/hackdong/adpaper-code-latest.git
    ```
 
 2. Install the required dependencies:
