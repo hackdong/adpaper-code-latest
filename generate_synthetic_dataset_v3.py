@@ -7,22 +7,22 @@ import soundfile as sf
 from tqdm import tqdm
 import time
 
-# 设置随机种子以确保可重复性
+
 random.seed(42)
 np.random.seed(42)
 
-# 定义数据集路径
+
 MIMII_PATH = 'dataset/MIMII'
 URBAN_SOUND_PATH = 'dataset/UrbanSound8K'
 ESC_50_PATH = 'dataset/ESC-50-master'
 OUTPUT_PATH = 'dataset/synthetic_dataset_v3'
 VALIDATION_OUTPUT_PATH = 'dataset/synthetic_validation_dataset_v3'
 
-# 确保输出目录存在
+
 os.makedirs(OUTPUT_PATH, exist_ok=True)
 os.makedirs(VALIDATION_OUTPUT_PATH, exist_ok=True)
 
-# 读取UrbanSound8K和ESC-50元数据
+
 urban_sound_metadata = pd.read_csv(os.path.join(URBAN_SOUND_PATH, 'UrbanSound8K.csv'))
 esc_50_metadata = pd.read_csv(os.path.join(ESC_50_PATH, 'meta', 'esc50.csv'))
 
@@ -64,14 +64,14 @@ def load_esc_50_file():
     return full_path, category
 
 def mix_audio(base_audio, overlay_audio, start_time, overlay_ratio):
-    # 确保开始时间不会导致叠加音频超出基础音频的长度
+
     max_start = len(base_audio) - len(overlay_audio)
     start_sample = min(int(start_time * 16000), max_start)
     
-    # 将叠加音频的音量调整为基础音频的一定比例
+
     overlay_audio = overlay_audio * overlay_ratio
     
-    # 创建混合音频
+
     mixed_audio = base_audio.copy()
     end_sample = start_sample + len(overlay_audio)
     mixed_audio[start_sample:end_sample] += overlay_audio
@@ -79,11 +79,11 @@ def mix_audio(base_audio, overlay_audio, start_time, overlay_ratio):
     return mixed_audio
 
 def generate_synthetic_sample(mimii_file, is_normal, device_type, product_id, overlay_source):
-    # 加载MIMII音频
+
     base_audio, _ = librosa.load(mimii_file, sr=16000, mono=True)
     
-    # 随机选择是否叠加音频
-    if random.random() < 0.5:  # 50%的概率叠加音频
+
+    if random.random() < 0.5:  
         if overlay_source == 'urban':
             overlay_file, overlay_category = load_urban_sound_file()
         else:  # ESC-50
@@ -91,13 +91,13 @@ def generate_synthetic_sample(mimii_file, is_normal, device_type, product_id, ov
         
         overlay_audio, _ = librosa.load(overlay_file, sr=16000, mono=True)
         
-        # 随机选择叠加开始时间
+
         start_time = random.uniform(0, len(base_audio) / 16000 - len(overlay_audio) / 16000)
         
-        # 随机选择叠加比例
+
         overlay_ratio = random.choice([0.75, 0.8, 0.85, 0.9, 0.95, 1.0])
         
-        # 混合音频
+
         mixed_audio = mix_audio(base_audio, overlay_audio, start_time, overlay_ratio)
         
         end_time = start_time + len(overlay_audio) / 16000
@@ -106,7 +106,7 @@ def generate_synthetic_sample(mimii_file, is_normal, device_type, product_id, ov
         overlay_category = None
         start_time = None
         end_time = None
-        overlay_ratio = 1.0  # 没有叠加，基础音频的比例为100%
+        overlay_ratio = 1.0  
     
     return mixed_audio, is_normal, device_type, product_id, overlay_category, start_time, end_time, overlay_ratio
 
@@ -114,7 +114,7 @@ def generate_dataset(num_samples, dataset_type='train'):
     metadata = []
     device_types = ['fan', 'gearbox', 'pump', 'slider', 'valve']
     
-    # 加载所有MIMII音频文件
+
     all_normal_files = []
     all_anomaly_files = []
     for device in device_types:
@@ -126,12 +126,12 @@ def generate_dataset(num_samples, dataset_type='train'):
     
     start_timeT = time.time()
     
-    # 首先处理所有异常文件
+
     num_anomaly_samples = len(all_anomaly_files)
     num_normal_samples = num_samples - num_anomaly_samples
     
     with tqdm(total=num_samples, desc=f"Generating {dataset_type} samples") as pbar:
-        # 处理异常样本
+
         for i, (mimii_file, is_normal, device_type, product_id) in enumerate(all_anomaly_files):
             overlay_source = random.choice(['urban', 'esc'])
             mixed_audio, is_normal, device_type, product_id, overlay_category, start_time, end_time, overlay_ratio = generate_synthetic_sample(
@@ -154,7 +154,7 @@ def generate_dataset(num_samples, dataset_type='train'):
             
             pbar.update(1)
         
-        # 处理正常样本
+
         for i in range(num_normal_samples):
             mimii_file, is_normal, device_type, product_id = random.choice(all_normal_files)
             overlay_source = random.choice(['urban', 'esc'])
@@ -178,16 +178,16 @@ def generate_dataset(num_samples, dataset_type='train'):
             
             pbar.update(1)
             
-            # 估算剩余时间
+
             elapsed_time = time.time() - start_timeT
             samples_per_second = (i + 1 + num_anomaly_samples) / elapsed_time
             remaining_samples = num_samples - (i + 1 + num_anomaly_samples)
             estimated_time_remaining = remaining_samples / samples_per_second
             
-            # 更新进度条描述
+
             pbar.set_description(f"Generating {dataset_type} samples - ETA: {estimated_time_remaining:.2f}s")
     
-    # 保存元数据
+
     metadata_df = pd.DataFrame(metadata)
     metadata_df.to_csv(os.path.join(output_path, f'{dataset_type}_metadata.csv'), index=False)
 

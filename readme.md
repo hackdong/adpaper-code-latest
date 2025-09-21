@@ -51,15 +51,7 @@ This project implements a deep learning system for detecting sound events and an
 
 ├── generate_synthetic_dataset_v3.py
 
-├── semantic_treev3.json # Semantic tree definition
-
-├── semantictreemodelv3.py # Core model implementation
-
-├── runs/ # Training runs and results
-
-├── framework_visualization/ # Framework visualization outputs
-
-├── semantic_treev3.json # Semantic tree definition
+├── semantic_treev6.json # Semantic tree definition
 
 ├── semantictreemodelv3.py # Core model implementation
 

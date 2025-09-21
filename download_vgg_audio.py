@@ -8,14 +8,7 @@ import subprocess
 
 class VGGAudioDownloader:
     def __init__(self, csv_path, output_dir, segment_length=10, max_downloads=500):
-        """
-        初始化下载器
-        Args:
-            csv_path: VGG数据集CSV文件路径
-            output_dir: 音频文件保存目录
-            segment_length: 每个片段长度(秒)
-            max_downloads: 最大下载数量
-        """
+
         self.csv_path = csv_path
         self.output_dir = output_dir
         self.segment_length = segment_length
@@ -49,29 +42,29 @@ class VGGAudioDownloader:
                             names=['youtube_id', 'start_seconds', 'label', 'split'])
 
     def _load_download_record(self):
-        """加载下载记录"""
+
         if os.path.exists(self.download_record_path):
             with open(self.download_record_path, 'r') as f:
                 return json.load(f)
         return {'completed': [], 'failed': []}
 
     def _save_download_record(self):
-        """保存下载记录"""
+
         with open(self.download_record_path, 'w') as f:
             json.dump(self.download_record, f)
 
     def download_audio(self):
-        """下载完整音频并截取片段"""
-        # 创建必要的目录
+
+
         segments_dir = os.path.join(self.output_dir, 'segments')
         temp_dir = os.path.join(self.output_dir, 'temp')
         os.makedirs(segments_dir, exist_ok=True)
         os.makedirs(temp_dir, exist_ok=True)
         
         download_count = 0
-        processed_ids = set()  # 记录已处理的YouTube ID
+        processed_ids = set()  
         
-        # 遍历每个片段
+
         for _, row in tqdm(self.df.iterrows(), desc="Downloading segments", total=len(self.df)):
             if download_count >= self.max_downloads:
                 print(f"\nReached maximum download limit ({self.max_downloads})")
@@ -82,7 +75,7 @@ class VGGAudioDownloader:
             label = row['label']
             split = row['split']
             
-            # 如果已经处理过这个视频或在失败记录中，跳过
+
             if youtube_id in processed_ids or youtube_id in self.download_record['failed']:
                 continue
                 
@@ -96,11 +89,11 @@ class VGGAudioDownloader:
                 url = f"https://www.youtube.com/watch?v={youtube_id}"
                 temp_file = os.path.join(temp_dir, f"{youtube_id}.wav")
                 
-                # 下载完整音频
+
                 with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
                     ydl.download([url])
                 
-                # 使用ffmpeg截取片段
+
                 subprocess.run([
                     self.ffmpeg_path,
                     '-i', temp_file,
@@ -111,7 +104,7 @@ class VGGAudioDownloader:
                     '-y'
                 ], check=True)
                 
-                # 删除临时文件
+
                 if os.path.exists(temp_file):
                     os.remove(temp_file)
                 
@@ -129,14 +122,14 @@ class VGGAudioDownloader:
             self._save_download_record()
 
 def main():
-    # 配置参数
-    csv_path = "./dataset/vggdata/vggsound.csv"  # VGG数据集CSV文件路径
-    output_dir = "./dataset/vggdata/vgg_audio"  # 输出目录
+
+    csv_path = "./dataset/vggdata/vggsound.csv"  
+    output_dir = "./dataset/vggdata/vgg_audio"  
     
-    # 创建下载器实例
+
     downloader = VGGAudioDownloader(csv_path, output_dir, max_downloads=500)
     
-    # 下载音频片段
+
     downloader.download_audio()
     
     print("\nDownload completed!")

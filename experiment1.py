@@ -337,7 +337,7 @@ def calculate_normal_category_accuracy(true_categories, pred_similarities, norma
     correct = 0
     total = 0
     for true_cat, similarities in zip(true_categories, pred_similarities):
-        if true_cat is not None:  # 只对正常音频进行计算
+        if true_cat is not None:  
             total += 1
             top3 = similarities.argsort()[-3:][::-1]
             if any(normal_categories[i] in true_cat for i in top3):
@@ -369,15 +369,15 @@ def train(model, train_loader, optimizer, device, epoch, num_epochs, normal_cate
         optimizer.zero_grad()
         anomaly_output, anomaly_severity, category_output, audio_embedding = model(audio, text)
 
-        # 异常检测损失
+
         class_weights = torch.tensor([1.0, 5.0]).to(device)
         criterion = nn.CrossEntropyLoss(weight=class_weights)
         anomaly_loss = criterion(anomaly_output, labels)
         
-        # 异常程度损失
+
         severity_loss = F.mse_loss(anomaly_severity, severity)
         
-        # 类别识别损失（使用文本相似度）
+
         text_similarities = model.get_text_similarity(text, normal_categories)
         category_loss = -torch.log(text_similarities.max(dim=1)[0]).mean()  # 使用最大相似度的负对数作为损失
 
@@ -403,7 +403,7 @@ def train(model, train_loader, optimizer, device, epoch, num_epochs, normal_cate
     metrics = calculate_metrics(all_labels, all_preds, all_severity_true, all_severity_pred)
     severity_accuracy = calculate_severity_accuracy(np.array(all_labels), np.array(all_preds), np.array(all_severity_true))
     
-    # 计算正常音频的类别识别准确率
+
     normal_mask = np.array(all_labels) == 0
     if normal_mask.any():
         category_accuracy = calculate_normal_category_accuracy(
@@ -419,7 +419,7 @@ def train(model, train_loader, optimizer, device, epoch, num_epochs, normal_cate
 
     return (total_loss / len(train_loader), *metrics, severity_accuracy, category_accuracy, epoch_time)
 
-# 改：评估函数
+
 def evaluate(model, test_loader, device, normal_categories):
     model.eval()
     total_loss = 0
@@ -439,7 +439,7 @@ def evaluate(model, test_loader, device, normal_categories):
 
             anomaly_output, anomaly_severity, category_output, audio_embedding = model(audio, text)
 
-            # 计算文本描述与正常类别的相似度
+
             text_similarities = model.get_text_similarity(text, normal_categories)
 
             anomaly_loss = F.cross_entropy(anomaly_output, labels)
@@ -473,7 +473,7 @@ def evaluate(model, test_loader, device, normal_categories):
 
     severity_accuracy = calculate_severity_accuracy(all_labels, all_preds, all_severity_true)
 
-    # 计算正常音频的类别识别准确率
+
     if normal_mask.any():
         category_accuracy = calculate_normal_category_accuracy(
             np.array(all_category_true)[normal_mask],
@@ -483,7 +483,7 @@ def evaluate(model, test_loader, device, normal_categories):
     else:
         category_accuracy = np.nan
 
-    # 计算异常音频程度识别准确率
+
     severity_level_accuracy = calculate_severity_level_accuracy(
         all_severity_true[anomaly_mask],
         all_severity_pred[anomaly_mask]
@@ -552,7 +552,7 @@ class AudioAnomalyDataset(Dataset):
 
 
 def getPANN(device):
-    # 初始化 PANN 模型
+
     pann = PANN(sample_rate=16000, window_size=1024, hop_size=160, mel_bins=64, fmin=50, fmax=8000)
 
     state_dict = torch.load('Cnn14_mAP=0.431.pth')
@@ -560,17 +560,17 @@ def getPANN(device):
 
     model_dict = pann.state_dict()
 
-    # 1. 过滤掉不匹配的键
+
     pretrained_dict = {k: v for k, v in state_dict.items() if k in model_dict and v.shape == model_dict[k].shape}
 
-    # 2. 更新当前模型的状态字典
+
     model_dict.update(pretrained_dict) 
 
-    # 3. 加载新的状态字典
+
     pann.load_state_dict(model_dict, strict=False)
 
     pann = pann.to(device)
-    # 初始化 DistilBert 模型
+
     return pann
 
 def get_text_embeddings(texts, model, tokenizer, device):
@@ -665,7 +665,7 @@ def print_metrics(metrics, prefix=""):
         if 'severity_level_accuracy' in metrics:
             print(f"{prefix}Severity Level Accuracy: {metrics['severity_level_accuracy']:.4f}")
     else:
-        # 处理训练指标元组
+
         loss, acc, auc, pauc, precision, recall, f1, mse, severity_accuracy, category_accuracy, epoch_time = metrics
         
         auc_str = f"{auc:.4f}" if not np.isnan(auc) else "N/A"
@@ -693,7 +693,7 @@ def save_final_metrics(results, filename='final_validation_metrics.csv'):
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # 初始化模型和分词器
+
     tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
     normal_categories = [
         "fan", "gearbox", "pump", "slider", "valve",  # MIMII categories
@@ -703,23 +703,23 @@ def main():
         "washing_machine", "clock_tick", "person_sneeze", "helicopter", "mouse_click"  # Additional common sounds
     ]
     
-    # 初始化 PANN 模型（假设您有一个函数来做这个）
+
     pann = getPANN(device)
     
     model = FlexibleAnomalyAudioClassifier(pann, sample_rate=16000, min_segment_size=16000, 
                                            max_segment_size=48000, device=device, 
                                            normal_categories=normal_categories).to(device)
 
-    # 加载数据
+
     train_val_dataset = SyntheticAudioDataset('dataset/synthetic_dataset/train_metadata.csv', 
                                               'dataset/synthetic_dataset')
     
-    # 分割训练集和测试集
+
     train_size = int(0.8 * len(train_val_dataset))
     test_size = len(train_val_dataset) - train_size
     train_dataset, test_dataset = random_split(train_val_dataset, [train_size, test_size])
 
-    # 加载验证集
+
     val_dataset = SyntheticAudioDataset('dataset/synthetic_validation_dataset/validation_metadata.csv', 
                                         'dataset/synthetic_validation_dataset')
 
@@ -727,15 +727,15 @@ def main():
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
     val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
-    # 训练设置
+
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     num_epochs = 20
 
-    # 创建一个唯一的文件名，包含时间戳
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     metrics_filename = f'training_metrics_{timestamp}.csv'
 
-    # 训练循环
+
     total_start_time = time.time()
     for epoch in range(num_epochs):
         train_metrics = train(model, train_loader, optimizer, device, epoch, num_epochs, normal_categories)
@@ -745,29 +745,28 @@ def main():
         print("Train Results:")
         print_metrics(train_metrics)
         print("\nTest Results:")
-        print_metrics(test_results)  # 直接传递整个 test_results 字典
+        print_metrics(test_results)  
         
-        # 保存指标
+
         save_metrics(epoch, train_metrics, test_results, filename=metrics_filename)
 
-    # 在验证集上进行最终评估
+
     val_results = evaluate(model, val_loader, device, normal_categories)
     print("\nFinal Validation Results:")
     print_metrics(val_results)
 
-    # 保存最终验证结果
+
     save_final_metrics(val_results, filename='final_validation_metrics.csv')
 
     print(f"\nTraining completed. Total time: {(time.time() - total_start_time)/3600:.2f} hours")
     print(f"Training metrics saved to {metrics_filename}")
 
-    # 保存模型
+
     model_filename = f'anomaly_detection_model_{timestamp}.pth'
     torch.save(model.state_dict(), model_filename)
     print(f"Model saved to {model_filename}")
 
 if __name__ == "__main__":
-    # 清理 GPU 缓存
     torch.cuda.empty_cache()
     main()
 

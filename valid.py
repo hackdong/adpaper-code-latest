@@ -15,35 +15,35 @@ from sklearn.metrics import f1_score
 
 
 def setup_logging(run_dir):
-    """设置日志记录器"""
+
     logger = logging.getLogger('validation')
     logger.setLevel(logging.INFO)
     
-    # 创建文件处理器
+
     fh = logging.FileHandler(os.path.join(run_dir, 'validation.log'))
     fh.setLevel(logging.INFO)
     
-    # 创建控制台处理器
+
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
     
-    # 创建格式器
+
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
     
-    # 添加处理器到日志记录器
+
     logger.addHandler(fh)
     logger.addHandler(ch)
     
     return logger
 
 def custom_collate_fn(batch):
-    """自定义的collate函数，处理None值和不同长度的数据"""
+
     if len(batch) == 0:
         return {}
     
-    # 过滤掉None值
+
     batch = [b for b in batch if b is not None]
     if len(batch) == 0:
         return None
@@ -73,36 +73,36 @@ def custom_collate_fn(batch):
 
 
 def main():
-    # 创建运行目录
+
     run_dir = "./runs/20241212_221047/validation"
     model_dir = "./runs/20241212_221047"
-    # 设置日志记录器
+
     logger = setup_logging(run_dir)
-        # 设备设置
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logger.info(f'Using device: {device}')
-    # 保存配置
+
     config = {
-        # 数据路径配置
+
         'data_paths': {
             'train_metadata': './dataset/synthetic_validation_dataset_v3/validation_metadata.csv',
 
             'semantic_tree': './semantic_treev3.json',
         },
-        # 训练参数
+
         'batch_size': 32,
         'learning_rate': 0.001,
         'num_epochs': 30,
         'temperature': 0.07,
     }
 
-            # 创建验证集
+
     test_dataset = AudioDataset(
         metadata_path=config['data_paths']['train_metadata'],
         semantic_tree_path=config['data_paths']['semantic_tree'],
         split='val',
-        train_ratio=0.1,  # 使用相同的比例
-        random_seed=42    # 使用相同的随机种子确保划分一致
+        train_ratio=0.1,  
+        random_seed=42    
     )
         
     test_loader = DataLoader(
@@ -116,7 +116,7 @@ def main():
     )
     
     print(f"validation dataset size: {len(test_dataset)}")
-    # 加载最佳事件检测模型并评估
+
     logger.info("Evaluating best event detection model on validation set...")
     best_event_model = EventDetectionModel(num_event_categories=len(test_dataset.event_categories))
     best_event_model.load_state_dict(torch.load(os.path.join(model_dir, 'best_event_model.pth'))['model_state_dict'])
@@ -169,14 +169,14 @@ def main():
                 "size of data": str(len(event_predictions))   })
     logger.info(f"Event detection validation completed in {end_time - start_time:.2f} seconds")
 
-    # 保存预测结果为CSV文件
+
     print("len(event_predictions):",len(event_predictions))
     predictions_df = pd.DataFrame(event_predictions)
     predictions_df.to_csv(os.path.join(run_dir, 'event_detection_val_predictions.csv'), index=False)
     logger.info("Event detection validation predictions saved to CSV.")
     
     
-    # 加载最佳机器分析模型并评估
+
     logger.info("Evaluating best machine analysis model on test set...")
     best_machine_model = MachineAnalysisModel(
         num_device_types=len(test_dataset.device_types),
@@ -187,7 +187,7 @@ def main():
     best_machine_model.eval()
     
     start_time = time.time()
-    # 评估机器分析模型
+
     machine_predictions = []
     for i, batch in enumerate(test_loader):
         inputs = batch['audio'].to(device)
@@ -218,7 +218,7 @@ def main():
     time_df.to_csv(os.path.join(run_dir, 'timecost.csv'), index=False)
 
 
-    # 保存机器分析模型的测试结果为CSV文件
+
     print("len(machine_predictions):",len(machine_predictions))
     machine_predictions_df = pd.DataFrame(machine_predictions)
     machine_predictions_df.to_csv(os.path.join(run_dir, 'machine_analysis_val_predictions.csv'), index=False)

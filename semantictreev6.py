@@ -1,4 +1,4 @@
-#使用自动k值选择的谱聚类构建语义树
+
 import numpy as np
 import requests
 import json
@@ -24,26 +24,20 @@ class TreeNode:
 
 class ClusterInfo:
     def __init__(self, nodes: List[int], centroid: np.ndarray = None):
-        self.node_indices = nodes  # 簇中节点的索引
-        self.centroid = centroid   # 簇的中心向量
+        self.node_indices = nodes  
+        self.centroid = centroid   
 
 class SemanticTreeBuilder:
     def __init__(self, api_url: str = 'http://localhost:11434/api/chat'):
         self.api_url = api_url
-        self.embeddings = {}  # 存储语的嵌入向量
+        self.embeddings = {}  
         self.nodes = []  # Store TreeNode objects instead of clusters
         self.embedding_model = SentenceTransformer('all-mpnet-base-v2')
         self.similarity_matrix = None  # Add this line to store similarity matrix
         self.output_file = 'semantic_treev3.json'  # Add default output file path
         
     def get_semantic_label(self, nodes: List[TreeNode], excluded_labels: List[str] = None) -> str:
-        """
-        调用大模型获取语义标签
-        Args:
-            nodes: 需要合并的TreeNode列表
-            excluded_labels: 不应该包含的标签列表
-        """
-        # 只使用子节点的label而不是所有phrases
+
         labels = [node.label for node in nodes]
         print(f"Getting semantic label for cluster of {len(labels)} labels...")
         print(f"Labels to include: {labels}")
@@ -82,20 +76,20 @@ class SemanticTreeBuilder:
         candidate_labels = json.loads(response.text)['message']["content"].strip().split('\n')
         print(f"Generated labels: {candidate_labels}")
         
-        # 选择最佳标签
+
         return self._select_best_label(candidate_labels, nodes)
 
     def _select_best_label(self, candidate_labels: List[str], nodes: List[TreeNode]) -> str:
         """
         从候选标签中选择与子节点embedding平均值最接近的标签
         """
-        # 计算子节点embeddings的平均值
+
         node_embeddings = np.array([node.embedding for node in nodes])
         centroid = np.mean(node_embeddings, axis=0)
         
-        # 计算每个候选标签的embedding并找出最接近的
+
         best_similarity = -1
-        best_label = candidate_labels[0]  # 默认使用第一个标签
+        best_label = candidate_labels[0] 
         
         for label in candidate_labels:
             label_embedding = self._text_embedding(label)
@@ -108,7 +102,7 @@ class SemanticTreeBuilder:
         return best_label
     
     def build_tree(self, phrases: List[str]) -> TreeNode:
-        """构建语义树"""
+
         print(f"Starting tree building with {len(phrases)} phrases...")
         # Initialize leaf nodes
         self.nodes = [TreeNode(phrase) for phrase in phrases]
@@ -182,42 +176,40 @@ class SemanticTreeBuilder:
                 self.similarity_matrix[j][i] = sim
     
     def _build_similarity_graph(self) -> nx.Graph:
-        """基于特征值斜率选择k值和k最近邻构建相似度图"""
-        # 初始化最终的相似度图
+        """Build similarity graph using adaptive k-NN based on eigenvalue analysis"""
+
         final_graph = nx.Graph()
         
-        # 使用已有的相似度矩阵作为亲和矩阵
+
         affinity_matrix = self.similarity_matrix
         
-        # 计算特征值和特征向量
+
         eigenvalues, eigenvectors = np.linalg.eig(affinity_matrix)
-        sorted_indices = np.argsort(eigenvalues)[::-1]  # 降序排列
+        sorted_indices = np.argsort(eigenvalues)[::-1]  
         eigenvalues = eigenvalues[sorted_indices]
         
-        # 计算斜率并找到最佳k值
+
         slopes = np.diff(eigenvalues)
-        k = np.argmin(slopes) + 2  # +1 因为slopes长度比eigenvalues少1
-        
+        k = np.argmin(slopes) + 2          
         print(f"Selected k value: {k}")
         
-        # 对每个节点找到k个最近邻
+   
         n = len(self.nodes)
         for i in range(n):
-            # 获取当前节点与所有其他节点的相似度
+   
             similarities = affinity_matrix[i]
-            # 找到k个最相似的节点（不包括自己）
-            # 将自己的相似度设为最小值，这样不会选到自己
+
             similarities[i] = -np.inf
             nearest_neighbors = np.argsort(similarities)[-k:]
             
-            # 如果两个节点互为k近邻，则添加边
+ 
             for j in nearest_neighbors:
-                # 获取j的k个最近邻
+
                 similarities_j = affinity_matrix[j].copy()
                 similarities_j[j] = -np.inf
                 nearest_neighbors_j = np.argsort(similarities_j)[-k:]
                 
-                # 如果i和j互为k近邻，则添加边
+   
                 if i in nearest_neighbors_j:
                     final_graph.add_edge(i, j)
         
@@ -225,15 +217,15 @@ class SemanticTreeBuilder:
     
     
     def _text_embedding(self, text: str) -> np.ndarray:
-        """获取文本的嵌入向量"""
-        # 检查缓存中存在
+
+
         if text not in self.embeddings:
-            # 使用预训练模型获取嵌入向量
+
             self.embeddings[text] = self.embedding_model.encode([text])[0]
         return self.embeddings[text]
     
     def save_tree(self, root: TreeNode, output_file: str = None) -> None:
-        """保存语义树到JSON文件"""
+
         if output_file:
             self.output_file = output_file
 
@@ -253,18 +245,18 @@ class SemanticTreeBuilder:
         print(f"Semantic tree saved to {self.output_file}")
     
     def _calculate_centroid(self, nodes: List[TreeNode]) -> np.ndarray:
-        """计算一组节点的中心向量"""
+
         embeddings = np.array([node.embedding for node in nodes])
         return np.mean(embeddings, axis=0)
 
 
-# 使用示例
+
 if __name__ == "__main__":
     
     # 读取all_audio_classesv2.txt
     with open('all_audio_classesv2.txt', 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f if line.strip()]
-        # 跳过前两行
+
         all_classes = [line[1:] for line in lines[2:] if line.startswith('-')]
     print("number of all_classes:",len(all_classes))  
 

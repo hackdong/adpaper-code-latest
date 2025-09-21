@@ -1,5 +1,4 @@
 # Import required libraries
-#增加whisper特征提取
 
 import os
 import pandas as pd
@@ -253,7 +252,6 @@ class AudioEventDetector(nn.Module):
             nn.Linear(512, device_embedding_dim)
         )
         
-        # 修改normal分类分支
         self.normal_feature_extractor = TimeAwareFeatureExtractor(1024)
         self.normal_classifier = nn.Sequential(
             nn.Linear(512, 256),
@@ -338,7 +336,7 @@ class AudioEventDetector(nn.Module):
         }
 
 class TimeAwareFeatureExtractor(nn.Module):
-    """通过时间掩码来关注背景声音的特征提取器"""
+
     def __init__(self, input_dim):
         super().__init__()
         self.attention = nn.Sequential(
@@ -356,14 +354,12 @@ class TimeAwareFeatureExtractor(nn.Module):
         )
 
     def forward(self, x, time_mask):
-        # 提取特征
+
         features = self.feature_net(x)
         
-        # 计算attention权重
         attention_weights = self.attention(x)
         attention_weights = F.softmax(attention_weights, dim=1)
         
-        # 处理time_mask维度
         if time_mask.dim() == 4:  # (batch, channel, time, 1)
             time_mask = time_mask.squeeze(-1).squeeze(1)
         elif time_mask.dim() == 3:  # (batch, 1,time)
@@ -371,18 +367,16 @@ class TimeAwareFeatureExtractor(nn.Module):
         elif time_mask.dim() == 1:
             time_mask = time_mask.unsqueeze(0)
             
-        # 计算背景意力
         background_attention = 1 - F.adaptive_avg_pool1d(
             time_mask.unsqueeze(1),
             features.size(-1)
         ).squeeze(1)
         
-        # 加权特征
         weighted_features = features * attention_weights * background_attention
         return weighted_features
 
 class EventClassifier(nn.Module):
-    """带对比学习的事件分类器"""
+
     def __init__(self, input_dim, embedding_dim):
         super().__init__()
         self.encoder = nn.Sequential(
@@ -407,26 +401,26 @@ class EventClassifier(nn.Module):
         features = self.encoder(x)  # Now expects input of size (batch, 1024)
         
         if time_mask is not None:
-            # 计算attention权重
+
             attention_weights = self.time_attention(features)  # shape: (batch, 512)
             attention_weights = F.softmax(attention_weights, dim=1)
             
-            # 处理time_mask维度
+
             if time_mask.dim() == 4:  # (batch, channel, time, 1)
-                time_mask = time_mask.squeeze(-1).squeeze(1)  # 变成 (batch, time)
+                time_mask = time_mask.squeeze(-1).squeeze(1) 
             elif time_mask.dim() == 3:  # (batch, 1, time)
                 time_mask = time_mask.squeeze(-2)
             elif time_mask.dim() == 1:  # (time,)
-                time_mask = time_mask.unsqueeze(0)  # 添加batch维度
+                time_mask = time_mask.unsqueeze(0) 
             
-            # 确保time_mask是2D张量 (batch, time)
+
             if time_mask.dim() != 2:
                 raise ValueError(f"Expected time_mask to be 2D after processing, but got {time_mask.dim()}D")
             
-            # 将time_mask转换为所需的形状
+
             time_attention = time_mask.float()  # shape: (batch, time)
             
-            # 调整time_attention的大小以匹配features的第二维
+
             if time_attention.size(1) != features.size(1):
                 time_attention = F.interpolate(
                     time_attention.unsqueeze(1),  # 添加channel维度
@@ -435,8 +429,7 @@ class EventClassifier(nn.Module):
                     align_corners=False
                 ).squeeze(1)  # shape: (batch, 512)
             
-            # 所有张量现在都是 (batch, 512)
-            # 直接相乘即可，不需要额外的维度调整
+
             features = features * attention_weights * time_attention
         
         embeddings = self.projection(features)
@@ -464,15 +457,14 @@ def create_training_directory():
     return run_dir
 
 def save_training_history(history, save_dir):
-    """保存训练历史并绘制图表"""
-    # 保存为JSON
+
     with open(os.path.join(save_dir, 'training_history.json'), 'w') as f:
         json.dump(history, f, indent=4)
     
-    # 绘制损失曲线
+
     plt.figure(figsize=(15, 5))
     
-    # 损失曲线
+
     plt.subplot(1, 2, 1)
     plt.plot(history['train_loss'], label='Train Loss')
     plt.plot(history['val_loss'], label='Validation Loss')
@@ -481,7 +473,7 @@ def save_training_history(history, save_dir):
     plt.ylabel('Loss')
     plt.legend()
     
-    # 准确率曲线
+
     plt.subplot(1, 2, 2)
     metrics = ['overlay_acc', 'device_acc', 'normal_acc', 'time_acc']
     for metric in metrics:
@@ -496,9 +488,7 @@ def save_training_history(history, save_dir):
     plt.close()
 
 def evaluate_model(model, data_loader, device):
-    """
-    修改评估函数以使用最相似匹配的方式
-    """
+
     model.eval()
     stats = {
         'total': {'correct': 0, 'total': 0},
@@ -511,7 +501,7 @@ def evaluate_model(model, data_loader, device):
         }
     }
     
-    # 预计算所有类别的embeddings
+
     overlay_embeddings = torch.stack([
         torch.tensor(emb, device=device)
         for emb in data_loader.dataset.overlay_embeddings.values()
@@ -527,13 +517,13 @@ def evaluate_model(model, data_loader, device):
     
     with torch.no_grad():
         for batch in data_loader:
-            # 移动数据到设备
+
             batch = {k: v.to(device) if torch.is_tensor(v) else v 
                     for k, v in batch.items()}
             
             outputs = model(batch['mel_spec'], batch['whisper_features'])
             
-            # 计算与所有类别的相似度
+
             overlay_sim = F.cosine_similarity(
                 outputs['overlay_output'].unsqueeze(1),  # [B, 1, D]
                 overlay_embeddings.unsqueeze(0),  # [1, C, D]
@@ -546,11 +536,11 @@ def evaluate_model(model, data_loader, device):
                 dim=2
             )  # [B, D]
             
-            # 获取预测的类别（最相似的）
+
             pred_overlay_idx = overlay_sim.argmax(dim=1)
             pred_device_idx = device_sim.argmax(dim=1)
             
-            # 获取真实类别的索引
+
             true_overlay_sim = F.cosine_similarity(
                 batch['overlay_embedding'].unsqueeze(1),
                 overlay_embeddings.unsqueeze(0),
@@ -565,11 +555,11 @@ def evaluate_model(model, data_loader, device):
             )
             true_device_idx = true_device_sim.argmax(dim=1)
             
-            # 判断预测是否正确
+
             overlay_correct = (pred_overlay_idx == true_overlay_idx)
             device_correct = (pred_device_idx == true_device_idx)
             
-            # 更新统计信息
+
             for i, (o_correct, d_correct) in enumerate(zip(overlay_correct, device_correct)):
                 true_overlay = category_list[true_overlay_idx[i]]
                 true_device = device_list[true_device_idx[i]]
@@ -587,7 +577,7 @@ def evaluate_model(model, data_loader, device):
                 if true_device in stats['device_types']:
                     stats['device_types'][true_device]['total'] += 1
     
-    # 计算准确率
+
     results = {
         'total_accuracy': stats['total']['correct'] / max(stats['total']['total'], 1),
         'overlay_accuracies': {},
@@ -595,7 +585,7 @@ def evaluate_model(model, data_loader, device):
         'ratio_accuracies': {}
     }
     
-    # 计算各类别的准确率
+
     for cat, cat_stats in stats['overlay_categories'].items():
         results['overlay_accuracies'][cat] = cat_stats['correct'] / max(cat_stats['total'], 1)
     
@@ -615,7 +605,7 @@ def print_evaluation_results(results):
     
     print("\nAccuracy by Overlay Category:")
     for cat, acc in sorted(results['overlay_accuracies'].items()):
-        if cat:  # 只打印非空类别
+        if cat:  
             print(f"  {cat:<20}: {acc:.4f}")
     
     print("\nAccuracy by Device Type:")
@@ -627,20 +617,20 @@ def print_evaluation_results(results):
         print(f"  {range_key:<20}: {acc:.4f}")
 
 class NTXentLoss(nn.Module):
-    """NT-Xent 损失函数用于对比学习"""
+
     def __init__(self, temperature=0.5):
         super().__init__()
         self.temperature = temperature
         self.eps = 1e-8
         
     def forward(self, features, masks):
-        # 确保输入在正确的设备上
+
         device = features.device
         
-        # 特征归一化
+
         features = F.normalize(features, p=2, dim=1)
         
-        # 处理masks维度
+
         if masks.dim() == 4:  # (batch, channel, time, 1)
             masks = masks.squeeze(-1).squeeze(1)
         elif masks.dim() == 3:  # (batch, 1, time)
@@ -648,53 +638,49 @@ class NTXentLoss(nn.Module):
         elif masks.dim() == 1:  # (time,)
             masks = masks.unsqueeze(0)
             
-        # 确保masks是浮点类型
+
         masks = masks.float()
         
-        # 计算相似度矩阵
         sim_matrix = torch.matmul(features, features.t()) / self.temperature
         
-        # 创建正样本对的掩码矩阵
         mask_time = F.adaptive_avg_pool1d(
             masks.unsqueeze(1),
             1
         ).squeeze()
         
-        # 计算正样本对的掩码
+
         positive_mask = (mask_time.unsqueeze(0) > 0.5) & (mask_time.unsqueeze(1) > 0.5)
         
-        # 移除对角线（自身对自身的比较）
+
         diag_mask = ~torch.eye(features.size(0), dtype=torch.bool, device=device)
         positive_mask = positive_mask & diag_mask
-        
-        # 计算exp(sim/temp)，添加数值稳定性
+
         exp_sim = torch.exp(sim_matrix - sim_matrix.max())
         
-        # 计算正样本对的损失
+
         pos_pairs = positive_mask.float() * exp_sim
         
-        # 避免除零，给分母加上一个小的常数
+
         denominator = exp_sim.masked_fill(~diag_mask, 0).sum(dim=1) + self.eps
         
-        # 计算每个样本的损失
+
         losses = -torch.log((pos_pairs.sum(dim=1) + self.eps) / denominator)
         
-        # 只计算有正样本对的样本的损失
+
         valid_samples = positive_mask.any(dim=1)
         
         if valid_samples.sum() > 0:
             return losses[valid_samples].mean()
         else:
-            # 如果没有有效的正样本，返回零损失
+
             return torch.tensor(0.0, device=device, requires_grad=True)
 
 def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Using device: {device}")  # 添加设备信息打印
+    print(f"Using device: {device}")  
     
     model = model.to(device)
     
-    # Loss functions - 确保所有损失函数都在正确的设备上
     embedding_criterion = nn.CosineEmbeddingLoss(reduction='mean').to(device)
     normal_criterion = nn.BCEWithLogitsLoss(reduction='mean').to(device)
     time_criterion = nn.BCELoss(reduction='mean').to(device)
@@ -702,7 +688,7 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
     
     optimizer = optim.Adam(model.parameters(), lr=lr)
     
-    # 初始化训练历史记录
+
     history = {
         'train_loss': [], 'train_overlay_acc': [], 'train_device_acc': [], 
         'train_normal_acc': [], 'train_time_acc': [],
@@ -710,7 +696,6 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
         'val_normal_acc': [], 'val_time_acc': []
     }
     
-    # 创建保存目录
     save_dir = create_training_directory()
     os.makedirs(save_dir, exist_ok=True)
     
@@ -753,16 +738,16 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
                 batch['time_mask']
             )
             
-            # 计算对比学习损失
+
             contrastive_loss = contrastive_criterion(
-                outputs['overlay_features'],  # 使用features进行对比学习
+                outputs['overlay_features'],  
                 batch['time_mask']
             )
             
-            # 总损失
+
             loss = overlay_loss + device_loss + normal_loss + time_loss + 0.1 * torch.clamp(contrastive_loss, min=-10, max=10)  # 限制对比损失的范围
             
-            # 检查损失是否为 NaN
+
             if torch.isnan(loss):
                 print("Warning: Loss is NaN!")
                 print(f"overlay_loss: {overlay_loss}")
@@ -770,7 +755,7 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
                 print(f"normal_loss: {normal_loss}")
                 print(f"time_loss: {time_loss}")
                 print(f"contrastive_loss: {contrastive_loss}")
-                continue  # 跳过这个批次
+                continue  
                 
             # Backward pass
             optimizer.zero_grad()
@@ -795,7 +780,7 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
                     dim=2
                 )  # [B, B]
                 
-                # 对每个样本，检查正确的embedding是否具有最高的相似度
+
                 overlay_correct = (overlay_sim.argmax(dim=1) == torch.arange(batch_size, device=device))
                 device_correct = (device_sim.argmax(dim=1) == torch.arange(batch_size, device=device))
                 
@@ -862,7 +847,7 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
                     dim=2
                 )  # [B, B]
                 
-                # 对每个样本，检查正确的embedding是否具有最高的相似度
+
                 overlay_correct = (overlay_sim.argmax(dim=1) == torch.arange(batch_size, device=device))
                 device_correct = (device_sim.argmax(dim=1) == torch.arange(batch_size, device=device))
                 
@@ -961,14 +946,14 @@ def main():
     
     # Initialize model and move to GPU
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Using device: {device}")  # 添加设备信息打印
+    print(f"Using device: {device}") 
     
     model = AudioEventDetector(
         event_embedding_dim=train_dataset.embedding_dim,
         device_embedding_dim=train_dataset.embedding_dim
     ).to(device)
     
-    # 打印模型参数数量和设备信息
+
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Total parameters: {total_params:,}")
