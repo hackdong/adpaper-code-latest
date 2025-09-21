@@ -1,6 +1,7 @@
 # Industrial Sound Event Detection and Anomaly Detection
 
-This project implements a deep learning system for detecting sound events and anomalies in industrial machinery. It combines event detection with machine condition monitoring using a semantic tree-based approach.
+This project implements a deep learning system for detecting sound events and anomalies in industrial machinery.  It combines event detection with machine condition monitoring using a semantic tree-based approach.
+For comprehensive details, please refer to our paper: "A lightweight and interference-resilient sound anomaly detection model for industrial machines based on semantic embedding trees".
 
 
 ## Features
