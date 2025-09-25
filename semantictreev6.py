@@ -80,9 +80,7 @@ class SemanticTreeBuilder:
         return self._select_best_label(candidate_labels, nodes)
 
     def _select_best_label(self, candidate_labels: List[str], nodes: List[TreeNode]) -> str:
-        """
-        从候选标签中选择与子节点embedding平均值最接近的标签
-        """
+
 
         node_embeddings = np.array([node.embedding for node in nodes])
         centroid = np.mean(node_embeddings, axis=0)
@@ -253,7 +251,7 @@ class SemanticTreeBuilder:
 
 if __name__ == "__main__":
     
-    # 读取all_audio_classesv2.txt
+
     with open('all_audio_classesv2.txt', 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f if line.strip()]
 

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def calculate_pauc(y_true, y_score, max_fpr=0.1):
-    """计算pAUC分数"""
+
     fpr, tpr, _ = roc_curve(y_true, y_score)
 
     last_index = np.searchsorted(fpr, max_fpr, 'right')
@@ -43,7 +43,7 @@ def main():
     results = []
     for ratio, mask in ratio_groups.items():
         group_df = merged_df[mask]
-        if len(group_df) > 0:  # 确保组内有数据
+        if len(group_df) > 0:  
             auc = roc_auc_score(~group_df['is_normal'], group_df['anomaly_score'])
             pauc = calculate_pauc(~group_df['is_normal'], group_df['anomaly_score'])
             sample_count = len(group_df)

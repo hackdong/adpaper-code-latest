@@ -35,9 +35,7 @@ class AudioDataset(Dataset):
     initialized = False 
     
     def __init__(self, metadata_path, semantic_tree_path, split='train', train_ratio=0.8, random_seed=42):
-        """
-        初始化数据集
-        """
+
 
         self.sample_rate = 16000
         self.n_fft = 400
@@ -147,7 +145,7 @@ class AudioDataset(Dataset):
         print(f"Number of event categories: {len(self.event_categories)}\n")
 
     def load_audio(self, file_path):
-        """加载并预处理音频文件"""
+
         try:
 
             waveform, sr = torchaudio.load(file_path)
@@ -624,7 +622,7 @@ class EventDetectionLoss(nn.Module):
             }
 
     def _calculate_mask_loss(self, predictions, targets):
-        """计算掩码损失"""
+
         try:
 
             predictions = predictions.to(targets.device)

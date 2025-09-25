@@ -46,7 +46,7 @@ class SemanticTreeCompressor(nn.Module):
         return latent, reconstruction
 
 def get_leaf_nodes_and_parents(node, parent_label=None):
-    """递归获取所有叶子节点及其父节点"""
+
     leaves = []
     if not node['children']:
         leaves.append({
@@ -59,48 +59,48 @@ def get_leaf_nodes_and_parents(node, parent_label=None):
     return leaves
 
 def visualize_embeddings(embeddings, leaf_nodes, title, filename):
-    """可视化嵌入向量"""
-    # t-SNE降维到2D
+
+
     tsne = TSNE(n_components=2, random_state=42)
     embeddings_2d = tsne.fit_transform(embeddings)
     
-    # 为每个独特的父节点分配颜色
+
     unique_parents = list(set(node['parent'] for node in leaf_nodes))
     color_palette = sns.color_palette('husl', n_colors=len(unique_parents))
     parent_to_color = dict(zip(unique_parents, color_palette))
     
-    # 绘制散点图
+
     plt.figure(figsize=(15, 10))
     for i, node in enumerate(leaf_nodes):
         color = parent_to_color[node['parent']]
         plt.scatter(embeddings_2d[i, 0], embeddings_2d[i, 1], c=[color], label=node['parent'])
         plt.annotate(node['label'], 
                     (embeddings_2d[i, 0], embeddings_2d[i, 1]), 
-                    fontsize=14)  # 增大节点标签字体
+                    fontsize=14)  
     
-    # 去除重复的图例
+
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), 
               bbox_to_anchor=(1.05, 1), 
               loc='upper left',
-              prop={'size': 12})  # 增大图例字体
+              prop={'size': 12})  
     
-    plt.title(title, fontsize=16)  # 增大标题字体
-    plt.xlabel('Dimension 1', fontsize=14)  # 增大x轴标签字体
-    plt.ylabel('Dimension 2', fontsize=14)  # 增大y轴标签字体
+    plt.title(title, fontsize=16) 
+    plt.xlabel('Dimension 1', fontsize=14) 
+    plt.ylabel('Dimension 2', fontsize=14)  
     
-    # 增大坐标轴刻度字体
+
     plt.tick_params(axis='both', which='major', labelsize=12)
     
     plt.tight_layout()
-    plt.savefig(filename, bbox_inches='tight', dpi=300)  # 提高DPI使图像更清晰
+    plt.savefig(filename, bbox_inches='tight', dpi=300) 
     plt.close()
 
 def calculate_tree_distance(node1_path, node2_path):
-    """计算树中两个节点的���离"""
+
     if not node1_path or not node2_path:
-        return 0  # 或者返回一个最大距离值
+        return 0  
         
     common_prefix_len = 0
     min_len = min(len(node1_path), len(node2_path))
@@ -114,7 +114,7 @@ def calculate_tree_distance(node1_path, node2_path):
     return len(node1_path) + len(node2_path) 
 
 def get_node_path(node, semantic_tree):
-    """获取节点到根节点的路径"""
+
     def find_node_path(current_node, target_label, current_path):
         if current_node['label'].strip() == target_label.strip():
             return current_path + [current_node['label']]
@@ -129,7 +129,7 @@ def get_node_path(node, semantic_tree):
     path = find_node_path(semantic_tree, node['label'], [])
     if path is None:
         print(f"Warning: Could not find path for node {node['label']}")
-        return [node['label']]  # 如果找不到路径，至少返回节点本身
+        return [node['label']]  
     return path
 
 class ContrastiveLoss(nn.Module):
@@ -141,22 +141,22 @@ class ContrastiveLoss(nn.Module):
         device = features.device
         batch_size = features.size(0)
         
-        # 计算相似度矩阵
+
         features = F.normalize(features, dim=1)
         similarity_matrix = torch.matmul(features, features.T) / self.temperature
         
-        # 创建标签矩阵
+
         labels = labels.contiguous().view(-1, 1)
         mask = torch.eq(labels, labels.T).float().to(device)
         
-        # 应用权重
+
         similarity_matrix = similarity_matrix * weights
         
-        # 计算对比损失
+
         exp_sim = torch.exp(similarity_matrix)
         log_prob = similarity_matrix - torch.log(exp_sim.sum(dim=1, keepdim=True))
         
-        # 计算每个样本的损失
+
         loss = (mask * log_prob).sum(dim=1) / mask.sum(dim=1)
         loss = -loss.mean()
         
@@ -164,12 +164,12 @@ class ContrastiveLoss(nn.Module):
 
 def calculate_dbi(embeddings, labels):
     """
-    计算 Davies-Bouldin 指数
+
     Args:
         embeddings: numpy array of shape (n_samples, n_features)
         labels: numpy array of shape (n_samples,)
     Returns:
-        dbi: Davies-Bouldin 指数
+        dbi: Davies-Bouldin index
     """
     try:
         return davies_bouldin_score(embeddings, labels)
@@ -178,7 +178,7 @@ def calculate_dbi(embeddings, labels):
         return float('nan')
 
 def create_output_directory():
-    """创建输出目录"""
+
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     output_dir = f'training_output_{timestamp}'
     os.makedirs(output_dir, exist_ok=True)
@@ -187,8 +187,8 @@ def create_output_directory():
     return output_dir
 
 def save_training_results(output_dir, history, best_epoch, compressed_embeddings, leaf_nodes):
-    """保存训练结果"""
-    # 保存训练历史
+
+
     history_path = os.path.join(output_dir, 'training_history.json')
     with open(history_path, 'w') as f:
         json.dump({
@@ -197,20 +197,20 @@ def save_training_results(output_dir, history, best_epoch, compressed_embeddings
             'best_epoch': best_epoch
         }, f, indent=4)
     
-    # 保存压缩后的嵌入
+
     embeddings_path = os.path.join(output_dir, 'compressed_embeddings.npy')
     np.save(embeddings_path, compressed_embeddings)
     
-    # 保存叶子节点信息
+
     nodes_path = os.path.join(output_dir, 'leaf_nodes.json')
     with open(nodes_path, 'w', encoding='utf-8') as f:
         json.dump(leaf_nodes, f, ensure_ascii=False, indent=4)
 
 def plot_training_progress(history, current_epoch, output_dir):
-    """绘制训练进度图包括损失和DBI"""
+
     plt.figure(figsize=(12, 5))
     
-    # 损失曲线
+
     plt.subplot(1, 2, 1)
     plt.plot(range(1, current_epoch + 1), history['loss'], 'b-', label='Loss')
     plt.xlabel('Epoch')
@@ -218,7 +218,7 @@ def plot_training_progress(history, current_epoch, output_dir):
     plt.title('Training Loss')
     plt.legend()
     
-    # DBI曲线
+
     plt.subplot(1, 2, 2)
     plt.plot(range(1, current_epoch + 1), history['dbi'], 'r-', label='DBI')
     plt.xlabel('Epoch')
@@ -231,81 +231,73 @@ def plot_training_progress(history, current_epoch, output_dir):
     plt.close()
 
 def compress_embeddings(embeddings_to_compress, pca_model_path=None):
-    """
-    使用已训练好的PCA模型将高维嵌入压缩为低维
-    Args:
-        embeddings_to_compress: 需要压缩的嵌入向量 (numpy array)
-        pca_model_path: PCA模型的保存路径，如果为None则使用最新的训练输出目录
-    Returns:
-        compressed_embeddings: 压缩后的嵌入向量
-    """
+
     if pca_model_path is None:
-        # 获取最新的训练输出目录
+
         output_dirs = [d for d in os.listdir('.') if d.startswith('training_output_')]
         if not output_dirs:
             raise FileNotFoundError("No training output directory found")
         latest_dir = max(output_dirs)
         pca_model_path = os.path.join(latest_dir, 'models', 'pca_model.pkl')
     
-    # 加载PCA模型
+
     with open(pca_model_path, 'rb') as f:
         pca = pickle.load(f)
     
-    # 使用PCA模型进行转换
+
     compressed_embeddings = pca.transform(embeddings_to_compress)
     return compressed_embeddings
 
 def train_compressor():
-    # 创建输出目录
+
     output_dir = create_output_directory()
     print(f"Created output directory: {output_dir}")
     
-    # 检测是否可用CUDA
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
-    
-    # 加载语义树
+
     with open('semantic_treev3.json', 'r', encoding='utf-8') as f:
         semantic_tree = json.load(f)
     
-    # 获取所有叶子节点及其父节点
+
     leaf_nodes = get_leaf_nodes_and_parents(semantic_tree)
     
-    # 获取唯一的父节点列表
+
     unique_parents = list(set(node['parent'] for node in leaf_nodes))
     print(f"Found {len(unique_parents)} unique parent nodes")
     
-    # 加载sentence transformer
+
     model = SentenceTransformer('sentence-transformers/paraphrase-MiniLM-L6-v2')
     
-    # 获取所有叶子节点的原始嵌入
+
     print("Generating original embeddings...")
     labels = [node['label'] for node in leaf_nodes]
     embeddings = model.encode(labels, convert_to_tensor=True)
     
-    # 确保embeddings在正确的设备上
+
     embeddings = embeddings.cpu().numpy()  # Convert to numpy array for PCA
     
-    # 计算原始嵌入的DBI值
+
     parent_labels = [node['parent'] for node in leaf_nodes]
     original_dbi = calculate_dbi(embeddings, parent_labels)
     print(f"\nDavies-Bouldin Index before PCA compression: {original_dbi:.4f}")
     
-    # 使用PCA进行降维
+
     print("Applying PCA for dimensionality reduction...")
     pca = PCA(n_components=32)
     compressed_embeddings = pca.fit_transform(embeddings)
     
-    # 保存PCA模型
+
     pca_model_path = os.path.join(output_dir, 'models', 'pca_model.pkl')
     with open(pca_model_path, 'wb') as f:
         pickle.dump(pca, f)
     
-    # 计算压缩后的DBI值
+
     compressed_dbi = calculate_dbi(compressed_embeddings, parent_labels)
     print(f"Davies-Bouldin Index after PCA compression: {compressed_dbi:.4f}")
     
-    # 可视化压缩后的嵌入
+
     print("Visualizing compressed embeddings...")
     visualize_embeddings(
         compressed_embeddings,
@@ -314,7 +306,7 @@ def train_compressor():
         os.path.join(output_dir, 'plots', 'compressed_semantic_tree_visualization.png')
     )
     
-    # 保存压缩后的嵌入
+
     embeddings_path = os.path.join(output_dir, 'compressed_embeddings_pca.npy')
     np.save(embeddings_path, compressed_embeddings)
     

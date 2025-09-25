@@ -14,14 +14,14 @@ class VGGAudioDownloader:
         self.segment_length = segment_length
         self.max_downloads = max_downloads
         
-        # 创建保存目录
+
         os.makedirs(output_dir, exist_ok=True)
         
-        # 加载下载记录
+
         self.download_record_path = os.path.join(output_dir, 'download_record.json')
         self.download_record = self._load_download_record()
         
-        # 简化 yt-dlp 配置
+
         self.ffmpeg_path = r'C:/Program Files/ffmpeg-7.1-full_build/bin/ffmpeg.exe'  # 使用原始字符串
         
         self.ydl_opts = {
@@ -37,7 +37,7 @@ class VGGAudioDownloader:
             'ffmpeg_location': self.ffmpeg_path,
         }
 
-        # 在初始化时读取CSV文件，添加列名
+
         self.df = pd.read_csv(csv_path, header=None, 
                             names=['youtube_id', 'start_seconds', 'label', 'split'])
 
