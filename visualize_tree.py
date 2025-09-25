@@ -49,20 +49,20 @@ def visualize_tree(G: nx.DiGraph, output_file: str = 'semantic_tree_viz.pdf'):
     print(f"Visualization saved as {output_file}")
 
 def print_tree_stats(G: nx.DiGraph):
-    """打印树的统计信息"""
+
     print("\nTree Statistics:")
     print(f"Number of nodes: {G.number_of_nodes()}")
     print(f"Number of edges: {G.number_of_edges()}")
     
-    # 找出根节点（入度为0的节点）
+
     root_nodes = [node for node in G.nodes() if G.in_degree(node) == 0]
     print(f"Root nodes: {root_nodes}")
     
-    # 找出叶子节点（出度为0的节点）
+
     leaf_nodes = [node for node in G.nodes() if G.out_degree(node) == 0]
     print(f"Number of leaf nodes: {len(leaf_nodes)}")
     
-    # 计算树的深度
+
     depths = []
     for root in root_nodes:
         for leaf in leaf_nodes:
@@ -77,13 +77,13 @@ def print_tree_stats(G: nx.DiGraph):
         print("Warning: Could not calculate tree depth - no valid paths from roots to leaves")
 
 def main():
-    # 确保输入文件存在
+
     input_file = 'semantic_treev3.json'
     if not Path(input_file).exists():
         print(f"Error: {input_file} not found!")
         return
     
-    # 加载树
+
     try:
         G = load_semantic_tree(input_file)
     except json.JSONDecodeError:
@@ -93,10 +93,10 @@ def main():
         print(f"Error loading tree: {e}")
         return
     
-    # 打印树的统计信息
+
     print_tree_stats(G)
     
-    # 可视化树
+
     try:
         visualize_tree(G, 'semantic_tree_viz.pdf')
     except Exception as e:
