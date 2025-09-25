@@ -21,7 +21,7 @@ class TestResultVisualizer:
         self._add_ratio_info()
         
     def _add_ratio_info(self):
-        """从metadata中添加ratio信息到结果DataFrame"""
+
         def extract_filename(path):
             return Path(path).name
             
