@@ -22,7 +22,7 @@ class VGGAudioDownloader:
         self.download_record = self._load_download_record()
         
 
-        self.ffmpeg_path = r'C:/Program Files/ffmpeg-7.1-full_build/bin/ffmpeg.exe'  # 使用原始字符串
+        self.ffmpeg_path = r'C:/Program Files/ffmpeg-7.1-full_build/bin/ffmpeg.exe'  
         
         self.ydl_opts = {
             'format': 'bestaudio/best',
