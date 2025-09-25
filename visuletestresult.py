@@ -41,7 +41,7 @@ class TestResultVisualizer:
 
         time_accuracy = []
         for _, row in self.event_results.iterrows():
-            if pd.notna(row['Event Start Time True']):  # 只考虑有事件的样本
+            if pd.notna(row['Event Start Time True']):  
                 pred_start = row['Event Start Time Predicted']
                 pred_end = row['Event End Time Predicted']
                 true_start = row['Event Start Time True']
@@ -162,7 +162,7 @@ class TestResultVisualizer:
         plt.close()
         
     def visualize_embeddings(self):
-        """使用t-SNE可视化embeddings"""
+
         def process_embedding(embedding_str):
 
             try:
