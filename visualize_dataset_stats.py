@@ -58,13 +58,13 @@ def plot_device_normal_anomaly_distribution(df, dataset_type):
     plt.close()
 
 def visualize_dataset_stats(metadata_file, dataset_type):
-    # 创建输出文件夹
+ 
     output_dir = 'dataset_visualization_results'
     os.makedirs(output_dir, exist_ok=True)
     
     df = load_metadata(metadata_file)
     
-    # 修改所有的 plot 函数调用，将输出路径改为新文件夹
+
     plot_device_distribution(df, f'{output_dir}/{dataset_type}')
     plot_normal_anomaly_distribution(df, f'{output_dir}/{dataset_type}')
     plot_overlay_category_distribution(df, f'{output_dir}/{dataset_type}')
