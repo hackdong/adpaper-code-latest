@@ -4,10 +4,10 @@ import seaborn as sns
 import numpy as np
 
 def load_data(training_metrics_file, validation_metrics_file):
-    # 加载训练指标
+
     train_df = pd.read_csv(training_metrics_file)
     
-    # 加载验证指标
+
     val_df = pd.read_csv(validation_metrics_file)
     
     return train_df, val_df
@@ -15,7 +15,7 @@ def load_data(training_metrics_file, validation_metrics_file):
 def plot_training_progress(train_df):
     plt.figure(figsize=(15, 10))
     
-    # 绘制损失
+
     plt.subplot(2, 2, 1)
     plt.plot(train_df['epoch'], train_df['train_loss'], label='Train Loss')
     plt.plot(train_df['epoch'], train_df['test_loss'], label='Test Loss')
@@ -24,7 +24,7 @@ def plot_training_progress(train_df):
     plt.ylabel('Loss')
     plt.legend()
     
-    # 绘制准确率
+
     plt.subplot(2, 2, 2)
     plt.plot(train_df['epoch'], train_df['train_acc'], label='Train Accuracy')
     plt.plot(train_df['epoch'], train_df['test_total_acc'], label='Test Accuracy')
@@ -33,7 +33,7 @@ def plot_training_progress(train_df):
     plt.ylabel('Accuracy')
     plt.legend()
     
-    # 绘制AUC
+
     plt.subplot(2, 2, 3)
     plt.plot(train_df['epoch'], train_df['train_auc'], label='Train AUC')
     plt.plot(train_df['epoch'], train_df['test_total_auc'], label='Test AUC')
@@ -42,7 +42,7 @@ def plot_training_progress(train_df):
     plt.ylabel('AUC')
     plt.legend()
     
-    # 绘制F1分数
+
     plt.subplot(2, 2, 4)
     plt.plot(train_df['epoch'], train_df['train_f1'], label='Train F1')
     plt.plot(train_df['epoch'], train_df['test_total_f1'], label='Test F1')
@@ -68,7 +68,7 @@ def plot_final_metrics(val_df):
     plt.close()
 
 def plot_confusion_matrix(val_df):
-    # 检查是否存在混淆矩阵数据
+
     cm_data = val_df[val_df['Metric'].str.contains('confusion_matrix', case=False, na=False)]
     
     if cm_data.empty:
@@ -85,7 +85,7 @@ def plot_confusion_matrix(val_df):
     plt.tight_layout()
     plt.savefig('confusion_matrix.png')
     plt.close()
-
+ 
 def main():
     training_metrics_file = 'training_metrics_20241021_081959.csv'
     validation_metrics_file = 'final_validation_metrics.csv'
