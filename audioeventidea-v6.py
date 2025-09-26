@@ -423,7 +423,7 @@ class EventClassifier(nn.Module):
 
             if time_attention.size(1) != features.size(1):
                 time_attention = F.interpolate(
-                    time_attention.unsqueeze(1),  # 添加channel维度
+                    time_attention.unsqueeze(1),  
                     size=features.size(1),
                     mode='linear',
                     align_corners=False
@@ -598,9 +598,7 @@ def evaluate_model(model, data_loader, device):
     return results
 
 def print_evaluation_results(results):
-    """
-    打印评估结果
-    """
+
     print(f"\nOverall Accuracy: {results['total_accuracy']:.4f}")
     
     print("\nAccuracy by Overlay Category:")
@@ -720,7 +718,7 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
             target = torch.ones(batch['mel_spec'].size(0), device=device)
             
             overlay_loss = embedding_criterion(
-                outputs['overlay_output'],  # 现在是tensor而不是tuple
+                outputs['overlay_output'], 
                 batch['overlay_embedding'],
                 target
             )
@@ -745,7 +743,7 @@ def train_model(model, train_loader, val_loader, num_epochs=10, lr=0.001):
             )
             
 
-            loss = overlay_loss + device_loss + normal_loss + time_loss + 0.1 * torch.clamp(contrastive_loss, min=-10, max=10)  # 限制对比损失的范围
+            loss = overlay_loss + device_loss + normal_loss + time_loss + 0.1 * torch.clamp(contrastive_loss, min=-10, max=10)  
             
 
             if torch.isnan(loss):

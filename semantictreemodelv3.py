@@ -224,7 +224,7 @@ class AudioDataset(Dataset):
                         self.category_to_idx[event_category], 
                         dtype=torch.long
                     ),
-                    'embedding': self.category_embeddings[event_category].clone()  # 添加 clone()
+                    'embedding': self.category_embeddings[event_category].clone()  
                 }
             }
             
@@ -657,7 +657,7 @@ class EventDetectionLoss(nn.Module):
         G = nx.DiGraph()
         
         def add_node_and_children(node_data, parent_label=None):
-            """递归添加节点子节点"""
+
             current_label = node_data['label'].strip()  
             G.add_node(current_label)
             
