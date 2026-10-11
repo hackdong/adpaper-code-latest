@@ -257,7 +257,7 @@ def train_compressor():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
 
-    with open('semantic_treev3.json', 'r', encoding='utf-8') as f:
+    with open('semantic_tree.json', 'r', encoding='utf-8') as f:
         semantic_tree = json.load(f)
     
 

@@ -9,7 +9,7 @@ from tqdm import tqdm
 import torch
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-from semantictreemodelv3 import AudioDataset, EventDetectionModel, MachineAnalysisModel, EventDetectionLoss, MachineAnalysisLoss
+from models import AudioDataset, EventDetectionModel, MachineAnalysisModel, EventDetectionLoss, MachineAnalysisLoss
 import torch.nn.functional as F
 from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
@@ -101,9 +101,9 @@ def main():
     config = {
 
         'data_paths': {
-            'train_metadata': './dataset/synthetic_dataset_v3/train_metadata.csv',
+            'train_metadata': './dataset/synthetic_dataset/train_metadata.csv',
 
-            'semantic_tree': './semantic_treev3.json',
+            'semantic_tree': './semantic_tree.json',
         },
 
         'batch_size': 32,

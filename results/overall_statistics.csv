@@ -1,0 +1,2 @@
+total_samples,num_folds,event_f1,event_f1_std,event_iou,event_iou_std,device_accuracy,device_accuracy_std,anomaly_precision,anomaly_precision_std,anomaly_recall,anomaly_recall_std,anomaly_f1,anomaly_f1_std
+3300,10,0.72,0.03,0.77,0.02,0.941,0.012,0.954,0.009,0.968,0.009,0.961,0.01

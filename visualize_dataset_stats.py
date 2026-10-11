@@ -72,8 +72,8 @@ def visualize_dataset_stats(metadata_file, dataset_type):
     plot_device_normal_anomaly_distribution(df, f'{output_dir}/{dataset_type}')
 
 if __name__ == "__main__":
-    train_metadata_file = 'dataset/synthetic_dataset_v3/train_metadata.csv'
-    validation_metadata_file = 'dataset/synthetic_validation_dataset_v3/validation_metadata.csv'
+    train_metadata_file = 'dataset/synthetic_dataset/train_metadata.csv'
+    validation_metadata_file = 'dataset/synthetic_validation_dataset/validation_metadata.csv'
 
     if os.path.exists(train_metadata_file):
         visualize_dataset_stats(train_metadata_file, 'train')

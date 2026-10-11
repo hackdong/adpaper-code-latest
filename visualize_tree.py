@@ -3,7 +3,7 @@ import networkx as nx
 import graphviz
 from pathlib import Path
 
-def load_semantic_tree(input_file: str = 'semantic_treev3.json') -> nx.DiGraph:
+def load_semantic_tree(input_file: str = 'semantic_tree.json') -> nx.DiGraph:
     """Load semantic tree from JSON file with hierarchical structure"""
     with open(input_file, 'r', encoding='utf-8') as f:
         tree_data = json.load(f)
@@ -78,7 +78,7 @@ def print_tree_stats(G: nx.DiGraph):
 
 def main():
 
-    input_file = 'semantic_treev3.json'
+    input_file = 'semantic_tree.json'
     if not Path(input_file).exists():
         print(f"Error: {input_file} not found!")
         return

@@ -79,18 +79,18 @@ class FrameworkVisualizer:
 
 def main():
 
-    audio_dir = "./dataset/synthetic_validation_dataset_v3"
+    audio_dir = "./dataset/synthetic_validation_dataset"
     output_dir = "./framework_visualization"
     os.makedirs(output_dir, exist_ok=True)
     
 
     audio_files = [
 
-        "./dataset/synthetic_validation_dataset_v3/synthetic_validation_2372_valve_01_normal.wav",
+        "./dataset/synthetic_validation_dataset/synthetic_validation_2372_valve_01_normal.wav",
 
-        "./dataset/synthetic_validation_dataset_v3/synthetic_validation_2381_valve_01_normal.wav",
+        "./dataset/synthetic_validation_dataset/synthetic_validation_2381_valve_01_normal.wav",
 
-        "./dataset/synthetic_validation_dataset_v3/synthetic_validation_2380_fan_01_normal.wav"
+        "./dataset/synthetic_validation_dataset/synthetic_validation_2380_fan_01_normal.wav"
     ]
     
 

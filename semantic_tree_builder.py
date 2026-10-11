@@ -34,7 +34,7 @@ class SemanticTreeBuilder:
         self.nodes = []  # Store TreeNode objects instead of clusters
         self.embedding_model = SentenceTransformer('all-mpnet-base-v2')
         self.similarity_matrix = None  # Add this line to store similarity matrix
-        self.output_file = 'semantic_treev3.json'  # Add default output file path
+        self.output_file = 'semantic_tree.json'  # Add default output file path
         
     def get_semantic_label(self, nodes: List[TreeNode], excluded_labels: List[str] = None) -> str:
 

@@ -19,7 +19,7 @@ from sentence_transformers import SentenceTransformer
 import torchaudio.transforms as T
 import numpy as np
 import networkx as nx
-from semantic_tree_embeddingv2 import compress_embeddings
+from semantic_tree_embedding import compress_embeddings
 import traceback
 
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -892,6 +892,6 @@ def custom_collate_fn(batch):
 
 
 def main():
-    print("use trainv3.py")
+    print("use train_crossval.py")
 if __name__ == "__main__":
     main()

@@ -16,7 +16,7 @@ def calculate_pauc(y_true, y_score, max_fpr=0.1):
 
 def main():
 
-    metadata_df = pd.read_csv('dataset/synthetic_dataset_v3/train_metadata.csv')
+    metadata_df = pd.read_csv('dataset/synthetic_dataset/train_metadata.csv')
     predictions_df = pd.read_csv('runs/20241212_221047/machine_analysis_test_predictions.csv')
     
 
